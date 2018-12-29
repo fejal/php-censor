@@ -32,10 +32,9 @@ php-censor:
     smtp_password:   null
     smtp_encryption: false
   queue:
-    use_queue: true
-    host:      localhost
-    name:      php-censor-queue
-    lifetime:  600
+    host:     localhost
+    name:     php-censor-queue
+    lifetime: 600
   log:
     rotate:    true
     max_files: 10
