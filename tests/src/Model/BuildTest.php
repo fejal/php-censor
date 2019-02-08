@@ -48,18 +48,34 @@ class BuildTest extends \PHPUnit\Framework\TestCase
             'errors_new'            => null,
         ], $build->getDataArray());
 
-        try {
-            $build = new Build([
-                'project_id' => 101,
-                'branch'     => 'dev',
-                'unknown'    => 'unknown',
-            ]);
-        } catch (InvalidArgumentException $e) {
-            self::assertEquals(
-                'Model "PHPCensor\Model\Build" doesn\'t have field "unknown"',
-                $e->getMessage()
-            );
-        }
+        $build = new Build([
+            'project_id' => 101,
+            'branch'     => 'dev',
+            'unknown'    => 'unknown',
+        ]);
+
+        self::assertInstanceOf('PHPCensor\Model\Build', $build);
+        self::assertEquals([
+            'id'                    => null,
+            'project_id'            => 101,
+            'commit_id'             => null,
+            'status'                => null,
+            'log'                   => null,
+            'branch'                => 'dev',
+            'tag'                   => null,
+            'create_date'           => null,
+            'start_date'            => null,
+            'finish_date'           => null,
+            'committer_email'       => null,
+            'commit_message'        => null,
+            'extra'                 => null,
+            'environment'           => null,
+            'source'                => Build::SOURCE_UNKNOWN,
+            'user_id'               => 0,
+            'errors_total'          => null,
+            'errors_total_previous' => null,
+            'errors_new'            => null,
+        ], $build->getDataArray());
 
         $build = new Build();
         $build->setLog('log');
