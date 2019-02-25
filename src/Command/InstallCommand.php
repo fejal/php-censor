@@ -402,9 +402,12 @@ class InstallCommand extends Command
             $dbPort       = $helper->ask($input, $output, $questionPort);
         }
 
-        if (strtolower($dbType) === "pgsql") {
-            $dbPgsqlSslmode = $input->getOption('db-pgsql-sslmode')
-                ?: 'prefer';
+        if (
+            $dbType === "pgsql"
+            && !$dbPgsqlSslmode = $input->getOption('db-pgsql-sslmode')
+        ) {
+            $questionSslmode = new Question('Please enter the connection\'s SSL mode (default: prefer): ', 'prefer');
+            $dbPgsqlSslmode  = $helper->ask($input, $output, $questionSslmode);
         }
 
         if (!$dbName = $input->getOption('db-name')) {
