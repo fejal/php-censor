@@ -13,7 +13,7 @@ class Database extends \PDO
     protected $type = 'read';
 
     /**
-     * @var boolean
+     * @var bool
      */
     protected static $initialised = false;
 
@@ -60,7 +60,10 @@ class Database extends \PDO
     protected static function init()
     {
         $config   = Config::getInstance();
-        $settings = $config->get('b8.database', []);
+        $settings = $config->get('php-censor.database', []);
+        if (!$settings) {
+            $settings = $config->get('b8.database', []);
+        }
 
         self::$servers['read']  = $settings['servers']['read'];
         self::$servers['write'] = $settings['servers']['write'];
@@ -100,16 +103,16 @@ class Database extends \PDO
 
                 self::$dsn[$type] = self::$details['driver'] . ':host=' . $server['host'];
 
-                if (self::$details['driver'] === "pgsql") {
-                    if (! array_key_exists("pgsql-sslmode", $server)) {
-                        $server["pgsql-sslmode"] = "prefer";
+                if (self::$details['driver'] === 'pgsql') {
+                    if (!array_key_exists('pgsql-sslmode', $server)) {
+                        $server['pgsql-sslmode'] = 'prefer';
                     }
 
                     self::$dsn[$type] .= ';sslmode=' . $server['pgsql-sslmode'];
                 }
 
                 if (isset($server['port'])) {
-                    self::$dsn[$type] .= ';port=' . (integer)$server['port'];
+                    self::$dsn[$type] .= ';port=' . (int)$server['port'];
                 }
 
                 self::$dsn[$type] .= ';dbname=' . self::$details['db'];

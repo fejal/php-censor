@@ -62,6 +62,7 @@ class BuildWorker
      * @param Logger       $logger
      * @param BuildService $buildService,
      * @param string       $queueHost
+     * @param int          $queuePort
      * @param string       $queueTube
      * @param bool         $canPeriodicalWork
      */
@@ -69,15 +70,15 @@ class BuildWorker
         Logger $logger,
         BuildService $buildService,
         $queueHost,
+        $queuePort,
         $queueTube,
         $canPeriodicalWork
-    )
-    {
+    ) {
         $this->logger       = $logger;
         $this->buildService = $buildService;
 
         $this->queueTube  = $queueTube;
-        $this->pheanstalk = new Pheanstalk($queueHost);
+        $this->pheanstalk = new Pheanstalk($queueHost, $queuePort);
 
         $this->lastPeriodical    = 0;
         $this->canPeriodicalWork = $canPeriodicalWork;
@@ -102,10 +103,8 @@ class BuildWorker
         $buildStore = Factory::getStore('Build');
 
         while ($this->canRun) {
-            if (
-                $this->canPeriodicalWork &&
-                $this->canRunPeriodicalWork()
-            ) {
+            if ($this->canPeriodicalWork &&
+                $this->canRunPeriodicalWork()) {
                 $this->buildService->createPeriodicalBuilds($this->logger);
             }
 
@@ -261,7 +260,7 @@ class BuildWorker
 
         $jobType = !empty($jobData['type'])
             ? $jobData['type']
-            : ''; 
+            : '';
 
         if (self::JOB_TYPE !== $jobType) {
             $this->logger->warning(

@@ -32,7 +32,7 @@ class CommandExecutor implements CommandExecutorInterface
     protected $lastError;
 
     /**
-     * @var boolean
+     * @var bool
      */
     public $logExecOutput = true;
 
@@ -443,5 +443,4 @@ class CommandExecutor implements CommandExecutorInterface
 
         return $env;
     }
-
 }

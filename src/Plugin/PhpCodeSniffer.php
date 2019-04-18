@@ -147,10 +147,8 @@ class PhpCodeSniffer extends Plugin implements ZeroConfigPluginInterface
 
         $phpcs = $this->executable;
 
-        if (
-            (!defined('DEBUG_MODE') || !DEBUG_MODE) &&
-            !(boolean)$this->build->getExtra('debug')
-        ) {
+        if ((!defined('DEBUG_MODE') || !DEBUG_MODE) &&
+            !(bool)$this->build->getExtra('debug')) {
             $this->builder->logExecOutput(false);
         }
 
@@ -200,8 +198,9 @@ class PhpCodeSniffer extends Plugin implements ZeroConfigPluginInterface
             $ignore = sprintf(' --ignore="%s"', implode(',', $this->ignore));
         }
 
-        if (strpos($this->standard, '/') !== false) {
-            $standard = ' --standard=' . $this->directory . $this->standard;
+        $standardPath = $this->normalizePath($this->standard);
+        if (file_exists($standardPath)) {
+            $standard = ' --standard=' . $standardPath;
         } else {
             $standard = ' --standard=' . $this->standard;
         }
@@ -254,7 +253,8 @@ class PhpCodeSniffer extends Plugin implements ZeroConfigPluginInterface
                 $this->build->reportError(
                     $this->builder,
                     self::pluginName(),
-                    'PHPCS: ' . $message['message'], 'ERROR' == $message['type'] ? BuildError::SEVERITY_HIGH : BuildError::SEVERITY_LOW,
+                    'PHPCS: ' . $message['message'],
+                    'ERROR' == $message['type'] ? BuildError::SEVERITY_HIGH : BuildError::SEVERITY_LOW,
                     $fileName,
                     $message['line']
                 );

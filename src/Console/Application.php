@@ -86,7 +86,10 @@ LOGO;
         parent::__construct($name, $version);
 
         $applicationConfig = Config::getInstance();
-        $databaseSettings  = $applicationConfig->get('b8.database', []);
+        $databaseSettings  = $applicationConfig->get('php-censor.database', []);
+        if (!$databaseSettings) {
+            $databaseSettings  = $applicationConfig->get('b8.database', []);
+        }
 
         $phinxSettings = [];
         if ($databaseSettings) {
@@ -110,17 +113,21 @@ LOGO;
 
         if (!empty($databaseSettings['port'])) {
             $phinxSettings['environments']['php-censor']['port'] =
-                (integer) $databaseSettings['port'];
+                (int)$databaseSettings['port'];
         }
 
-        if (! empty($databaseSettings['servers']['write'][0]['port'])) {
+        if (!empty($databaseSettings['servers']['write'][0]['port'])) {
             $phinxSettings['environments']['php-censor']['port'] =
-                (integer) $databaseSettings['servers']['write'][0]['port'];
+                (int)$databaseSettings['servers']['write'][0]['port'];
         }
 
-        if (! empty($databaseSettings["type"])
-            && $databaseSettings["type"] === "pgsql"
+        if (!empty($databaseSettings['type'])
+            && $databaseSettings['type'] === 'pgsql'
         ) {
+            if (!array_key_exists('pgsql-sslmode', $databaseSettings['servers']['write'][0])) {
+                $databaseSettings['servers']['write'][0]['pgsql-sslmode'] = 'prefer';
+            }
+
             $phinxSettings['environments']['php-censor']['host'] .=
                 ';sslmode=' . $databaseSettings['servers']['write'][0]['pgsql-sslmode'];
         }

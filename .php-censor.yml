@@ -10,13 +10,15 @@ setup:
 test:
     php_unit:
         config:
-            - phpunit.xml
+            - phpunit.xml.dist
         coverage: true
 
     php_code_sniffer:
         standard:       PSR2
         encoding:       UTF-8
         allow_failures: true
+        ignore:
+            - src/Migrations
 
     php_cpd:
         allow_failures: true

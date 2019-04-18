@@ -1,6 +1,5 @@
 [![PHP Censor](http://ci.php-censor.info/build-status/image/2?branch=master&label=PHPCensor&style=flat-square)](http://ci.php-censor.info/build-status/view/2?branch=master)
 [![Travis CI](https://img.shields.io/travis/php-censor/php-censor/master.svg?label=TravisCI&style=flat-square)](https://travis-ci.org/php-censor/php-censor?branch=master)
-[![SensioLabs Insight](https://img.shields.io/sensiolabs/i/26f28bee-a861-45b2-bc18-ed2ac7defd22.svg?label=Insight&style=flat-square)](https://insight.sensiolabs.com/projects/26f28bee-a861-45b2-bc18-ed2ac7defd22)
 [![Codecov](https://img.shields.io/codecov/c/github/php-censor/php-censor.svg?label=Codecov&style=flat-square)](https://codecov.io/gh/php-censor/php-censor)
 [![Latest Version](https://img.shields.io/packagist/v/php-censor/php-censor.svg?label=Version&style=flat-square)](https://packagist.org/packages/php-censor/php-censor)
 [![Total downloads](https://img.shields.io/packagist/dt/php-censor/php-censor.svg?label=Downloads&style=flat-square)](https://packagist.org/packages/php-censor/php-censor)
@@ -13,9 +12,14 @@
    
    
 **PHP Censor** is a open source self-hosted continuous integration server for PHP projects 
-([PHPCI](https://www.phptesting.org) fork).
+([PHPCI](https://www.phptesting.org) fork). [Official twitter @php_censor](https://twitter.com/php_censor).
 
-**Twitter**: [@php_censor](https://twitter.com/php_censor).
+Actual PHP Censor versions and release branches:
+
+| Version            | Branch         | Status                            | Minimal PHP Version |
+| :----------------- | :------------- | :-------------------------------- | :------------------ |
+| `1.0`              | `release-1.0`  | Current stable version            | `5.6`               |
+| `1.1`              | `master`       | Future stable minor version (WIP) | `5.6`               |
 
 [![Dashboard](docs/screenshots/dashboard.png)](docs/screenshots/dashboard.png)
 
@@ -89,7 +93,10 @@ cd /var/www
 * Create project by Composer:
 
 ```bash
-composer create-project php-censor/php-censor php-censor.local --keep-vcs
+composer create-project \
+    php-censor/php-censor \
+    php-censor.local \
+    --keep-vcs
 ```
 
 Or download [latest archive](https://github.com/php-censor/php-censor/releases/latest) from GitHub, unzip it and run 
@@ -100,7 +107,8 @@ Or download [latest archive](https://github.com/php-censor/php-censor/releases/l
 * Install Beanstalkd Queue (Optional, if you are going to use queue with Worker):
 
 ```bash
-aptitude install beanstalkd # For deb-based
+# For Debian-based
+aptitude install beanstalkd
 ```
 
 * Install PHP Censor itself:
@@ -112,10 +120,29 @@ cd ./php-censor.local
 ./bin/console php-censor:install
 
 # Non-interactive installation
-./bin/console php-censor:install --url='http://php-censor.local' --db-type=pgsql --db-host=localhost --db-pgsql-sslmode=prefer --db-name=php-censor --db-user=php-censor --db-password=php-censor --db-port=null --admin-name=admin --admin-password=admin --admin-email='admin@php-censor.local' --queue-use=1 --queue-host=localhost --queue-name=php-censor
+./bin/console php-censor:install \
+    --url='http://php-censor.local' \
+    --db-type=pgsql \
+    --db-host=localhost \
+    --db-pgsql-sslmode=prefer \
+    --db-name=php-censor \
+    --db-user=php-censor \
+    --db-password=php-censor \
+    --db-port=null \
+    --admin-name=admin \
+    --admin-password=admin \
+    --admin-email='admin@php-censor.local' \
+    --queue-use=1 \
+    --queue-host=localhost \
+    --queue-port=11300 \
+    --queue-name=php-censor
 
 # Non-interactive installation with prepared config.yml file
-./bin/console php-censor:install --config-from-file=yes --admin-name=admin --admin-password=admin --admin-email='admin@php-censor.local'
+./bin/console php-censor:install \
+    --config-from-file=yes \
+    --admin-name=admin \
+    --admin-password=admin \
+    --admin-email='admin@php-censor.local'
 ```
 
 * [Add a virtual host to your web server](docs/en/virtual_host.md), pointing to the `public` directory within your new
@@ -231,14 +258,14 @@ cd /path/to/php-censor
 ```bash
 cd /path/to/php-censor
 
-./vendor/bin/phpunit --configuration ./phpunit.xml --coverage-html ./tests/runtime/coverage -vvv --colors=always
+./vendor/bin/phpunit --configuration ./phpunit.xml.dist --coverage-html ./tests/runtime/coverage -vvv --colors=always
 ```
 
 For Phar plugin tests set 'phar.readonly' setting to Off (0) in `php.ini` config. Otherwise tests will be skipped.  
 
-For database B8Framework tests create empty 'b8_test' database on 'localhost' with user/password: `root/<empty>` 
+For database tests create empty 'test_db' database on 'localhost' with user/password: `root/<empty>` 
 for MySQL and with user/password: `postgres/<empty>` for PostgreSQL (You can change default test user, password and 
-database name in `phpunit.xml` config constants). If connection failed tests will be skipped.
+database name in `phpunit.xml[.dist]` config constants). If connection failed tests will be skipped.
 
 ## Documentation
 
